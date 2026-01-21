@@ -18,8 +18,8 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
-  "https://chatbox-ai-c6q1.onrender.com", // ⚠️ backend self (safe)
-  "https://https://chatbox-ai-five.vercel.app/"  // ⚠️ yahan apna Vercel URL daalna
+  "https://chatbox-ai-c6q1.onrender.com", // backend (safe)
+  "https://chatbox-ai-five.vercel.app"    // ✅ Vercel frontend (correct)
 ];
 
 app.use(
@@ -33,8 +33,14 @@ app.use(
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// ✅ VERY IMPORTANT (preflight fix)
+app.options("*", cors());
+
 
 
 /* ================= Body parser ================= */
