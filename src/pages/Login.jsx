@@ -67,8 +67,9 @@ export default function Login({ onClose, onLogin }) {
     setLoading(false);
   };
 
+  // ✅ UPDATED HERE (live backend URL)
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = "https://chatbox-ai-c6q1.onrender.com/api/auth/google";
   };
 
   return (
