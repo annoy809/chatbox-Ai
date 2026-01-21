@@ -99,50 +99,42 @@ useEffect(() => {
   /* ================= CHAT HANDLERS ================= */
 
   // Load existing chat OR start new empty chat
-  const handleNewChat = (chat) => {
-    if (chat?._id) {
-      setActiveChat(chat);
-      setChatHistory(chat.messages || []);
+const handleChatHistoryUpdate = async (messages) => {
+  setChatHistory(messages);
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("https://chatbox-ai-c6q1.onrender.com/api/chat/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        chatId: activeChat?._id,
+        messages,
+      }),
+    });
+
+    if (!res.ok) {
+      // Handle 401 explicitly
+      if (res.status === 401) {
+        console.error("Unauthorized: Invalid or expired token");
+        handleLogout(); // optional: log out user
+      } else {
+        console.error("Save chat failed with status", res.status);
+      }
       return;
     }
 
-    // 🆕 new unsaved chat
-    setActiveChat(null);
-    setChatHistory([
-      { type: "ai", text: "Hi 👋 I'm your AI assistant. Ask me anything." },
-    ]);
-  };
-
-  // Save/update chat after every message
-  const handleChatHistoryUpdate = async (messages) => {
-  setChatHistory(messages);
-
-  try {
-    const res = await fetch(
-      "https://chatbox-ai-c6q1.onrender.com/api/chat/save",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          chatId: activeChat?._id,
-          messages,
-        }),
-      }
-    );
-
     const savedChat = await res.json();
-
     setActiveChat(savedChat);
-
     setAllChats((prev) => {
       const exists = prev.find((c) => c._id === savedChat._id);
       if (exists) {
-        return prev.map((c) =>
-          c._id === savedChat._id ? savedChat : c
-        );
+        return prev.map((c) => (c._id === savedChat._id ? savedChat : c));
       }
       return [savedChat, ...prev];
     });
@@ -150,6 +142,7 @@ useEffect(() => {
     console.error("Save chat failed:", err);
   }
 };
+
 
   /* ================= RENDER ================= */
   return (
