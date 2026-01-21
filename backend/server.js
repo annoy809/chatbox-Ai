@@ -15,7 +15,12 @@ const chatRoutes = require("./routes/chatRoutes");
 const app = express();
 
 /* ================= CORS ================= */
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://chatbox-ai-c6q1.onrender.com", // ⚠️ backend self (safe)
+  "https://https://chatbox-ai-five.vercel.app/"  // ⚠️ yahan apna Vercel URL daalna
+];
 
 app.use(
   cors({
@@ -23,12 +28,14 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("❌ Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true, // ✅ needed for cookies / auth headers
+    credentials: true,
   })
 );
+
 
 /* ================= Body parser ================= */
 app.use(express.json());

@@ -20,7 +20,10 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     const token = req.user.token; // JWT from strategy
-    res.redirect(`http://localhost:5173/?token=${token}`);
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
+res.redirect(`${FRONTEND_URL}/?token=${token}`);
+
   }
 );
 
