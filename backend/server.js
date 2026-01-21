@@ -39,8 +39,7 @@ app.use(
 );
 
 // ✅ VERY IMPORTANT (preflight fix)
-app.options("*", cors());
-
+app.use(cors());
 
 
 /* ================= Body parser ================= */
