@@ -1,5 +1,5 @@
 // src/services/auth.service.js
-const API_URL = "http://localhost:5000/api/auth";
+const API_URL = "https://chatbox-ai-c6q1.onrender.com/api/auth";
 
 export const registerUser = async (data) => {
   const res = await fetch(`${API_URL}/register`, {

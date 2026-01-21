@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/ai';
+const API_URL = 'https://chatbox-ai-c6q1.onrender.com/api/ai';
 
 export const getAIResponse = async (prompt) => {
   try {
