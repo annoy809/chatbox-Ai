@@ -58,26 +58,27 @@ function App() {
     }
   }, []);
 
-  /* ================= FETCH CHATS ================= */
-  useEffect(() => {
-    if (!user) return;
+/* ================= FETCH CHATS ================= */
+useEffect(() => {
+  if (!user) return;
 
-    fetch("http://localhost:5000/api/chat/my", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+  fetch("https://chatbox-ai-c6q1.onrender.com/api/chat/my", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
+    .then((res) => res.json())
+    .then((chats) => {
+      setAllChats(chats);
+
+      if (chats.length > 0) {
+        setActiveChat(chats[0]);
+        setChatHistory(chats[0].messages || []);
+      }
     })
-      .then((res) => res.json())
-      .then((chats) => {
-        setAllChats(chats);
+    .catch((err) => console.error("Fetch chats error:", err));
+}, [user]);
 
-        if (chats.length > 0) {
-          setActiveChat(chats[0]);
-          setChatHistory(chats[0].messages || []);
-        }
-      })
-      .catch((err) => console.error("Fetch chats error:", err));
-  }, [user]);
 
   /* ================= AUTH ================= */
   const handleLoginSuccess = (loggedUser) => {
@@ -114,10 +115,12 @@ function App() {
 
   // Save/update chat after every message
   const handleChatHistoryUpdate = async (messages) => {
-    setChatHistory(messages);
+  setChatHistory(messages);
 
-    try {
-      const res = await fetch("http://localhost:5000/api/chat/save", {
+  try {
+    const res = await fetch(
+      "https://chatbox-ai-c6q1.onrender.com/api/chat/save",
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,25 +130,26 @@ function App() {
           chatId: activeChat?._id,
           messages,
         }),
-      });
+      }
+    );
 
-      const savedChat = await res.json();
+    const savedChat = await res.json();
 
-      setActiveChat(savedChat);
+    setActiveChat(savedChat);
 
-      setAllChats((prev) => {
-        const exists = prev.find((c) => c._id === savedChat._id);
-        if (exists) {
-          return prev.map((c) =>
-            c._id === savedChat._id ? savedChat : c
-          );
-        }
-        return [savedChat, ...prev];
-      });
-    } catch (err) {
-      console.error("Save chat failed:", err);
-    }
-  };
+    setAllChats((prev) => {
+      const exists = prev.find((c) => c._id === savedChat._id);
+      if (exists) {
+        return prev.map((c) =>
+          c._id === savedChat._id ? savedChat : c
+        );
+      }
+      return [savedChat, ...prev];
+    });
+  } catch (err) {
+    console.error("Save chat failed:", err);
+  }
+};
 
   /* ================= RENDER ================= */
   return (
