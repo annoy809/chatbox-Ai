@@ -1,0 +1,339 @@
+/* ===== MODAL BACKDROP ===== */
+.login-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* ===== GENERAL CONTAINER ===== */
+.login-container {
+  width: 360px;
+  max-width: 90%;
+  padding: 35px 30px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.05); /* frosted glass */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  color: #fefefe;
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* CLOSE BUTTON */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* ===== HEADING & SUBTEXT ===== */
+.login-container h1 {
+  margin-bottom: 8px;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+}
+
+.login-sub {
+  color: #ccc;
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 400;
+}
+
+/* ===== SOCIAL LOGIN ===== */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.google-btn,
+.github-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(145deg, #ffffff15, #ffffff05);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.google-btn img {
+  width: 22px;
+  border-radius: 4px;
+}
+
+.google-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.github-btn {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== OR DIVIDER ===== */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 22px 0;
+  color: #bbb;
+  width: 100%;
+}
+
+.divider span {
+  padding: 0 12px;
+  font-size: 13px;
+  color: #aaa;
+  background: rgba(0,0,0,0);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 1px;
+}
+
+/* ===== FORM INPUTS ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+form input {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+form input::placeholder {
+  color: #ccc;
+}
+
+form input:focus {
+  border: 1px solid #10a37f;
+  box-shadow: 0 0 10px rgba(16, 163, 127, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== FORM BUTTON ===== */
+form button {
+  padding: 12px;
+  border-radius: 16px;
+  border: none;
+  background: #10a37f;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* ===== SIGNUP TEXT ===== */
+.signup-text {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.signup-text span {
+  color: #e62323;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.signup-text span:hover {
+  text-decoration: underline;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 420px) {
+  .login-container {
+    width: 90%;
+    padding: 25px;
+  }
+}
+/* Profile summary container (avatar + info + upgrade) */
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background-color: rgba(255 255 255 / 0.1);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.profile-summary:hover,
+.profile-summary:focus {
+  background-color: rgba(255 255 255 / 0.15);
+  outline: none;
+}
+
+/* Avatar circle */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #8a79e6;
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* User info */
+.user-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-email {
+  font-size: 14px;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-plan {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* Upgrade button */
+.upgrade-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  border: none;
+  border-radius: 20px;
+  background-color: #8a79e6;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.upgrade-btn:hover {
+  background-color: #a18efc;
+}
+
+/* Dropdown menu */
+.profile-dropdown {
+  position: absolute;
+  bottom: 70px; /* above profile summary */
+  left: 20px;
+  width: 260px;
+  background: rgba(20, 15, 30, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  color: white;
+  padding: 16px 0;
+  font-size: 14px;
+  z-index: 100;
+  user-select: none;
+}
+
+/* Dropdown items */
+.profile-dropdown-item {
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.profile-dropdown-item:hover {
+  background-color: rgba(255 255 255 / 0.1);
+}
+
+.profile-dropdown-item span:first-child {
+  font-size: 18px;
+  width: 20px;
+  display: inline-block;
+  text-align: center;
+  user-select: none;
+}
+
+/* Submenu arrow for Help */
+.submenu-arrow {
+  margin-left: auto;
+  font-weight: 700;
+  user-select: none;
+}
+
+/* Divider line */
+.profile-dropdown hr {
+  margin: 8px 0;
+  border: 0;
+  border-top: 1px solid rgba(255 255 255 / 0.15);
+}
+
+/* Logout item style */
+.logout-item {
+  color: #e66868;
+  font-weight: 600;
+}
+
+.logout-item:hover {
+  background-color: rgba(230, 104, 104, 0.15);
+}
+
+/* Profile section positioning relative for dropdown */
+.profile-section {
+  position: relative;
+  padding: 12px 20px 0 20px;
+  margin-top: auto;
+}
