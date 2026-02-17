@@ -34,6 +34,9 @@ function App() {
   const [activeChat, setActiveChat] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
 
+  /* ================= LOCAL BACKEND URL ================= */
+  const API_BASE = "http://localhost:5000";
+
   /* ================= LOAD USER / JWT ================= */
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -58,27 +61,28 @@ function App() {
     }
   }, []);
 
-/* ================= FETCH CHATS ================= */
-useEffect(() => {
-  if (!user) return;
+  /* ================= FETCH CHATS ================= */
+  useEffect(() => {
+    if (!user) return;
 
-  fetch("https://chatbox-ai-c6q1.onrender.com/api/chat/my", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  })
-    .then((res) => res.json())
-    .then((chats) => {
-      setAllChats(chats);
-
-      if (chats.length > 0) {
-        setActiveChat(chats[0]);
-        setChatHistory(chats[0].messages || []);
-      }
+    fetch(`${API_BASE}/api/chat/my`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
-    .catch((err) => console.error("Fetch chats error:", err));
-}, [user]);
+      .then((res) => res.json())
+      .then((chats) => {
+        setAllChats(chats);
 
+        if (chats.length > 0) {
+          setActiveChat(chats[0]);
+          setChatHistory(chats[0].messages || []);
+        }
+      })
+      .catch((err) =>
+        console.error("Fetch chats error:", err)
+      );
+  }, [user]);
 
   /* ================= AUTH ================= */
   const handleLoginSuccess = (loggedUser) => {
@@ -97,8 +101,6 @@ useEffect(() => {
   };
 
   /* ================= CHAT HANDLERS ================= */
-
-  // Load existing chat OR start new empty chat
   const handleNewChat = (chat) => {
     if (chat?._id) {
       setActiveChat(chat);
@@ -106,21 +108,17 @@ useEffect(() => {
       return;
     }
 
-    // 🆕 new unsaved chat
     setActiveChat(null);
     setChatHistory([
       { type: "ai", text: "Hi 👋 I'm your AI assistant. Ask me anything." },
     ]);
   };
 
-  // Save/update chat after every message
   const handleChatHistoryUpdate = async (messages) => {
-  setChatHistory(messages);
+    setChatHistory(messages);
 
-  try {
-    const res = await fetch(
-      "https://chatbox-ai-c6q1.onrender.com/api/chat/save",
-      {
+    try {
+      const res = await fetch(`${API_BASE}/api/chat/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -130,26 +128,25 @@ useEffect(() => {
           chatId: activeChat?._id,
           messages,
         }),
-      }
-    );
+      });
 
-    const savedChat = await res.json();
+      const savedChat = await res.json();
 
-    setActiveChat(savedChat);
+      setActiveChat(savedChat);
 
-    setAllChats((prev) => {
-      const exists = prev.find((c) => c._id === savedChat._id);
-      if (exists) {
-        return prev.map((c) =>
-          c._id === savedChat._id ? savedChat : c
-        );
-      }
-      return [savedChat, ...prev];
-    });
-  } catch (err) {
-    console.error("Save chat failed:", err);
-  }
-};
+      setAllChats((prev) => {
+        const exists = prev.find((c) => c._id === savedChat._id);
+        if (exists) {
+          return prev.map((c) =>
+            c._id === savedChat._id ? savedChat : c
+          );
+        }
+        return [savedChat, ...prev];
+      });
+    } catch (err) {
+      console.error("Save chat failed:", err);
+    }
+  };
 
   /* ================= RENDER ================= */
   return (

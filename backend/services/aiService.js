@@ -1,13 +1,28 @@
-import axios from 'axios';
+// src/services/aiService.js
+import axios from "axios";
 
-const API_URL = 'https://chatbox-ai-c6q1.onrender.com/api/ai';
+// 🔒 Local backend only
+const API_URL = "http://localhost:5000/api/chat";
 
 export const getAIResponse = async (prompt) => {
   try {
-    const res = await axios.post(`${API_URL}/chat`, { prompt }); // must match backend route
+    const res = await axios.post(
+      API_URL,
+      { prompt },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
     return res.data.message;
   } catch (err) {
-    console.error(err);
-    return 'Error getting AI response';
+    console.error(
+      "❌ Frontend AI Error:",
+      err.response?.data || err.message
+    );
+
+    return "⚠️ Failed to get AI response";
   }
 };

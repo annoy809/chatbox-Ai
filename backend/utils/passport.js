@@ -11,12 +11,14 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://chatbox-ai-c6q1.onrender.com/api/auth/google/callback",
+
+      // ✅ LOCAL callback (NO Render / Vercel)
+      callbackURL: "http://localhost:5000/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Find or create user
         let user = await User.findOne({ googleId: profile.id });
+
         if (!user) {
           user = await User.create({
             name: profile.displayName,
@@ -25,11 +27,12 @@ passport.use(
           });
         }
 
-        // Generate JWT token
-        const token = generateToken(user); // { id, email }
+        const token = generateToken(user);
 
-        // Pass both user and token to callback
-        done(null, { user: { id: user._id, email: user.email }, token });
+        done(null, {
+          user: { id: user._id, email: user.email },
+          token,
+        });
       } catch (err) {
         console.error("Google Strategy error:", err);
         done(err, null);
@@ -57,7 +60,7 @@ passport.use(
   })
 );
 
-/* ================= SESSION (optional for OAuth) ================= */
+/* ================= SESSION ================= */
 passport.serializeUser((obj, done) => done(null, obj));
 passport.deserializeUser((obj, done) => done(null, obj));
 

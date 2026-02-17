@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const session = require("express-session");
 const passport = require("passport");
+require("./utils/passport"); // 👈 VERY IMPORTANT (loads strategies)
+
 
 dotenv.config();
 
@@ -14,77 +15,53 @@ const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 
-/* ================= CORS ================= */
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "https://chatbox-ai-c6q1.onrender.com", // backend (safe)
-  "https://chatbox-ai-five.vercel.app"    // ✅ Vercel frontend (correct)
-];
-
+/* ================= CORS (LOCAL ONLY) ================= */
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("❌ Blocked by CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// ✅ VERY IMPORTANT (preflight fix)
-app.use(cors());
-
-
-/* ================= Body parser ================= */
+/* ================= Body Parser ================= */
 app.use(express.json());
-
-/* ================= Sessions (for OAuth if used) ================= */
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "keyboard cat",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-/* ================= Passport JWT ================= */
-app.use(passport.initialize());
-app.use(passport.session());
 
 /* ================= API Routes ================= */
 app.use("/api/ai", aiRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/chat", chatRoutes); // ✅ Matches frontend
+app.use("/api/chat", chatRoutes); // ✅ frontend hits this
+app.use(passport.initialize());
 
-/* ================= Health check ================= */
+
+/* ================= Health Check ================= */
 app.get("/", (req, res) => {
-  res.send("🚀 AI Backend Running");
+  res.send("🚀 AI Backend Running (Local)");
 });
 
-/* ================= MongoDB Connect ================= */
+/* ================= MongoDB ================= */
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB Connected");
   } catch (err) {
-    console.error("❌ MongoDB Connection Error:", err.message);
+    console.error("❌ MongoDB Error:", err.message);
     process.exit(1);
   }
 };
 connectDB();
 
-/* ================= Start server ================= */
-const PORT = process.env.PORT || 5000;
+/* ================= Server ================= */
+const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
 
 /* ================= Debug ================= */
-console.log("KEY LOADED:", process.env.OPENROUTER_API_KEY ? "YES" : "NO");
+console.log(
+  "🔑 OpenRouter Key:",
+  process.env.OPENROUTER_API_KEY ? "LOADED" : "MISSING"
+);

@@ -17,14 +17,13 @@ router.get(
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/" }),
+  passport.authenticate("google", { failureRedirect: "/", session: false }),
   (req, res) => {
-    const token = req.user.token; // JWT from strategy
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
-
-res.redirect(`${FRONTEND_URL}/?token=${token}`);
-
+    const token = req.user.token;
+    const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+    res.redirect(`${FRONTEND_URL}/?token=${token}`);
   }
 );
+
 
 module.exports = router;
