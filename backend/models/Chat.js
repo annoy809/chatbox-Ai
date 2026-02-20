@@ -6,6 +6,7 @@ const MessageSchema = new mongoose.Schema(
     text: { type: String, required: true },
   },
   { _id: false } // Prevent Mongoose from adding _id to each message
+  
 );
 
 const ChatSchema = new mongoose.Schema(
@@ -17,10 +18,15 @@ const ChatSchema = new mongoose.Schema(
     messages: { type: [MessageSchema], default: [] },
 
     autoTitle: { type: Boolean, default: false },
+
+    // 🔥 ADD THESE
+    isPinned: { type: Boolean, default: false },
+    isArchived: { type: Boolean, default: false },
   },
   {
-    timestamps: true, // ✅ adds createdAt & updatedAt automatically
+    timestamps: true,
   }
 );
+
 
 module.exports = mongoose.model("Chat", ChatSchema);

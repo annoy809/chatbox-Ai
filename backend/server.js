@@ -16,25 +16,24 @@ const chatRoutes = require("./routes/chatRoutes");
 const app = express();
 
 /* ================= CORS (LOCAL ONLY) ================= */
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:3000",
-    ],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors({
+  origin: "http://localhost:5173",  // aapka frontend port
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 
 /* ================= Body Parser ================= */
 app.use(express.json());
 
+
+/* ================= Passport Init FIRST ================= */
+app.use(passport.initialize()); // 🔥 MOVE THIS UP
+
 /* ================= API Routes ================= */
 app.use("/api/ai", aiRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/chat", chatRoutes); // ✅ frontend hits this
-app.use(passport.initialize());
+app.use("/api/chat", chatRoutes); // ✅ now auth will work
 
 
 /* ================= Health Check ================= */

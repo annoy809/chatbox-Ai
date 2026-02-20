@@ -4,7 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
-  useNavigate,
+  useNavigate, // 🔥 FIX: missing import
 } from "react-router-dom";
 
 import AIChat from "./pages/AIChat.jsx";
@@ -61,27 +61,25 @@ function App() {
     }
   }, []);
 
+  /* ================= FETCH CHATS (REUSABLE) ================= */
+  const fetchMyChats = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/chat/my`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const chats = await res.json();
+      setAllChats(chats);
+    } catch (err) {
+      console.error("Fetch chats error:", err);
+    }
+  };
+
   /* ================= FETCH CHATS ================= */
   useEffect(() => {
     if (!user) return;
-
-    fetch(`${API_BASE}/api/chat/my`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((chats) => {
-        setAllChats(chats);
-
-        if (chats.length > 0) {
-          setActiveChat(chats[0]);
-          setChatHistory(chats[0].messages || []);
-        }
-      })
-      .catch((err) =>
-        console.error("Fetch chats error:", err)
-      );
+    fetchMyChats();
   }, [user]);
 
   /* ================= AUTH ================= */
@@ -98,6 +96,45 @@ function App() {
     setActiveChat(null);
     setChatHistory([]);
     navigate("/");
+  };
+
+  /* ================= DELETE CHAT ================= */
+  const handleDeleteChat = async (chatId) => {
+    if (!chatId) {
+      console.error("Invalid chatId:", chatId);
+      alert("Invalid Chat ID");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${API_BASE}/api/chat/${chatId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert("Failed to delete chat: " + (data.message || "Unknown error"));
+        return;
+      }
+
+      setAllChats((prev) => prev.filter((chat) => chat._id !== chatId));
+
+      if (activeChat?._id === chatId) {
+        setActiveChat(null);
+        setChatHistory([
+          { type: "ai", text: "Hi 👋 I'm your AI assistant. Ask me anything." },
+        ]);
+      }
+    } catch (err) {
+      console.error("Delete chat request error:", err);
+      alert("Delete chat request failed");
+    }
   };
 
   /* ================= CHAT HANDLERS ================= */
@@ -131,7 +168,6 @@ function App() {
       });
 
       const savedChat = await res.json();
-
       setActiveChat(savedChat);
 
       setAllChats((prev) => {
@@ -148,6 +184,72 @@ function App() {
     }
   };
 
+  /* ================= RENAME CHAT (FIXED) ================= */
+  const handleRenameChat = async (chatId) => {
+    const newTitle = prompt("Enter new chat name:");
+    if (!newTitle) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      await fetch(`${API_BASE}/api/chat/${chatId}/rename`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title: newTitle }),
+      });
+
+      await fetchMyChats(); // 🔥 refresh sidebar
+    } catch (err) {
+      console.error("Rename failed:", err);
+    }
+  };
+
+  /* ================= PIN CHAT (FIXED) ================= */
+  const handlePinChat = async (chatId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await fetch(`${API_BASE}/api/chat/${chatId}/pin`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      await fetchMyChats();
+    } catch (err) {
+      console.error("Pin failed:", err);
+    }
+  };
+
+  /* ================= ARCHIVE CHAT (FIXED) ================= */
+  const handleArchiveChat = async (chatId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await fetch(`${API_BASE}/api/chat/${chatId}/archive`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      await fetchMyChats();
+    } catch (err) {
+      console.error("Archive failed:", err);
+    }
+  };
+
+  /* ================= SHARE CHAT ================= */
+  const handleShareChat = (chatId) => {
+    const link = `${window.location.origin}/chat/${chatId}`;
+    navigator.clipboard.writeText(link);
+    alert("Chat link copied!");
+  };
+
   /* ================= RENDER ================= */
   return (
     <div className="app-container" style={{ display: "flex" }}>
@@ -158,6 +260,11 @@ function App() {
         onNewChat={handleNewChat}
         onLoginOpen={() => setShowLogin(true)}
         onLogout={handleLogout}
+        onDeleteChat={handleDeleteChat}
+        onRenameChat={handleRenameChat}
+        onPinChat={handlePinChat}
+        onArchiveChat={handleArchiveChat}
+        onShareChat={handleShareChat}
       />
 
       <main className="chat-area" style={{ flex: 1 }}>

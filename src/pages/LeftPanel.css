@@ -17,8 +17,8 @@
   transition: all 0.3s ease;
   position: relative;
   z-index: 1000;
-  overflow: hidden;
-  overflow-y: auto;
+overflow-y: auto;
+overflow-x: visible;
   /* desktop scroll if needed */
 }
 
@@ -58,7 +58,10 @@
   position: relative;
   margin-top: 12px;
   padding: 10px 6px;
-  overflow-y: auto;
+overflow-y: auto;
+overflow-x: visible;
+position: relative;
+
   flex: 1;
   max-height: calc(85vh - 180px);
 
@@ -442,3 +445,126 @@
     color: #ff6f61;
   }
 }
+/* ============================================= */
+/* CHAT HISTORY ITEM – RIGHT SIDE 3 DOT LAYOUT */
+/* ============================================= */
+
+/* Make item row layout instead of column */
+.chat-history-item {
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #cfcfd6;
+  margin: 6px 4px;
+
+  display: flex;
+  flex-direction: row;   /* fixed */
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+
+  z-index: 1;
+  transition:
+    background 0.25s ease,
+    border 0.25s ease,
+    transform 0.15s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
+}
+
+/* Wrap text properly */
+.chat-history-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+
+/* Right side 3 dot button */
+.chat-options-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+  flex-shrink: 0;
+}
+
+.chat-history-item:hover .chat-options-btn {
+  opacity: 1;
+}
+
+.chat-options-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+
+/* ============================================= */
+/* CHAT DROPDOWN MENU */
+/* ============================================= */
+.chat-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;         /* fixed */
+  margin-top: 6px;   /* spacing */
+
+  width: 220px;
+
+  background: rgba(30, 26, 45, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border-radius: 16px;
+  padding: 6px 0;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  z-index: 9999;
+
+  animation: chatDropdownAnim 0.15s ease;
+}
+
+
+@keyframes chatDropdownAnim {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.chat-dropdown-item {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: #ddd;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.chat-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.chat-dropdown-item.delete {
+  color: #ff5555;
+}
+
+.chat-dropdown hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 6px 0;
+}
+
