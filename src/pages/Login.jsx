@@ -4,6 +4,11 @@ import "./Login.css";
 import * as jwtDecodeModule from "jwt-decode";
 const jwtDecode = jwtDecodeModule.default || jwtDecodeModule;
 
+// 🔥 ADD THIS (auto detect local + deployed backend)
+const BASE_URL =
+  import.meta.env.VITE_API_URL?.replace("/api/ai/chat", "") ||
+  "http://localhost:5000";
+
 export default function Login({ onClose, onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,9 +72,9 @@ export default function Login({ onClose, onLogin }) {
     setLoading(false);
   };
 
-  // ✅ UPDATED HERE (live backend URL)
+  // ✅ UPDATED HERE (auto localhost + deployed backend)
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${BASE_URL}/api/auth/google`;
   };
 
   return (
