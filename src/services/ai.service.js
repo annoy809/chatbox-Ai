@@ -1,44 +1,53 @@
+// backend/services/aiService.js (actually this is frontend service)
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/ai/chat";
+// 🔥 Auto: Render (prod) + Local (dev)
+const API_URL =
+  import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}/api/ai/chat`
+    : "http://localhost:5000/api/ai/chat";
 
 export const getAIResponse = async (prompt) => {
   try {
-    if (!prompt || prompt.trim() === "") return "⚠️ Prompt is empty";
+    if (!prompt || prompt.trim() === "") {
+      return "⚠️ Prompt is empty";
+    }
 
     const res = await axios.post(
       API_URL,
       { prompt },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         timeout: 30000,
       }
     );
 
-    // Handle normal response
+    // Proper response handling (no [object Object])
     if (res.data?.message) return res.data.message;
+    if (res.data?.reply) return res.data.reply;
+    if (typeof res.data === "string") return res.data;
 
-    // Handle backend error object gracefully
-    if (res.data?.error) {
-      // Convert object to string if needed
-      return typeof res.data.error === "string"
-        ? `⚠️ ${res.data.error}`
-        : `⚠️ ${JSON.stringify(res.data.error)}`;
-    }
-
-    return "⚠️ No response from AI";
+    return res.data?.message || "⚠️ No response from AI";
   } catch (err) {
-    console.error("❌ Frontend AI Error:", err);
+    console.error(
+      "❌ Frontend AI Error:",
+      err.response?.data || err.message
+    );
 
-    if (err.response) {
-      const errorData = err.response.data?.error || err.response.data?.message || "Backend error";
-      return typeof errorData === "string"
-        ? `⚠️ ${errorData}`
-        : `⚠️ ${JSON.stringify(errorData)}`;
-    } else if (err.request) {
-      return "⚠️ No response from backend. Check server or network.";
-    } else {
-      return `⚠️ Request Error: ${err.message}`;
+    if (err.response?.data?.error?.message) {
+      return `⚠️ ${err.response.data.error.message}`;
     }
+
+    if (err.response?.data?.message) {
+      return `⚠️ ${err.response.data.message}`;
+    }
+
+    if (err.code === "ECONNABORTED") {
+      return "⚠️ Server timeout (Render sleeping)";
+    }
+
+    return "⚠️ Failed to get AI response";
   }
 };

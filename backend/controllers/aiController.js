@@ -30,7 +30,7 @@ const response = await axios.post(
     headers: {
       Authorization: `Bearer ${OPENROUTER_API_KEY}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": "http://localhost:5000",
+      "HTTP-Referer": process.env.CLIENT_URL || "https://chatbox-ai-c6q1.onrender.com",
       "X-Title": "ai-project",
     },
     timeout: 30000,
