@@ -16,31 +16,29 @@ const app = express();
 
 /* ================= CORS (LOCAL + DEPLOY SAFE) ================= */
 // 🔥 IMPORTANT: Frontend deploy hone ke baad CORS block na ho
+/* ================= CORS (LOCAL + DEPLOY SAFE - FINAL) ================= */
 const allowedOrigins = [
-  "http://localhost:5173", // Vite local
-  "http://localhost:3000", // React local (optional)
-  "https://chatbox-ai-c6q1.onrender.com", // (optional self)
-  // 👉 YAHAN apna frontend deploy URL add karna (jab deploy ho)
-  // Example:
-  // "https://your-frontend.onrender.com",
-  // "https://your-frontend.vercel.app"
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://chatbox-ai-c6q1.onrender.com",
+  "https://chatbox-ai-five.vercel.app", // ✅ CORRECT (no double https, no slash)
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (mobile apps, curl, postman)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
       } else {
-        return callback(null, true); // 🔥 TEMP: allow all (safe for testing)
+        console.log("❌ Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    credentials: true, // 🔥 VERY IMPORTANT for login cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
   })
 );
 
