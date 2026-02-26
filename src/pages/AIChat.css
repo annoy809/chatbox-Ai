@@ -292,20 +292,21 @@ html, body, #root {
 @media (max-width: 768px) {
 
   .ai-chat-wrapper {
-    width: 100%;
+    width: 390px;
     height: auto;
     min-height: 100dvh; /* 🔥 instead of 100vh */
     padding: 0;
     margin-left: 0;
   }
 
-  .chat-glass {
-    height: auto;
-    min-height: 100dvh; /* 🔥 Critical Vercel Fix */
-    border-radius: 0;
-    box-shadow: none;
-    width: 390px; 
-  }
+.chat-glass {
+  width: 100%;          /* 🔥 FULL WIDTH (no fixed 390px) */
+  max-width: 100%;
+  height: auto;
+  min-height: 100dvh;   /* Vercel safe */
+  border-radius: 0;
+  box-shadow: none;
+}
 
   .chat-header {
     font-size: 16px;
