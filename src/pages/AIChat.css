@@ -296,7 +296,7 @@ margin-right: 50px;
 
   .ai-chat-wrapper {
     width: 390px;
-    height: auto;
+    height: 600px;
     min-height: 100dvh; /* 🔥 instead of 100vh */
     padding: 0;
     margin-left: 0;
