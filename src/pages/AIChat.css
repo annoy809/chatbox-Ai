@@ -18,7 +18,7 @@ html, body, #root {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+margin-right: 50px;
   margin-left: 62px;
 }
 
@@ -306,7 +306,7 @@ html, body, #root {
   width: 100%;          /* 🔥 FULL WIDTH (no fixed 390px) */
   max-width: 100%;
   height: auto;
-  min-height: 105dvh;   /* Vercel safe */
+  min-height: 102dvh;   /* Vercel safe */
   border-radius: 0;
   box-shadow: none;
 }
