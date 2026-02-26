@@ -306,7 +306,7 @@ margin-right: 50px;
   width: 100%;          /* 🔥 FULL WIDTH (no fixed 390px) */
   max-width: 100%;
   height: auto;
-  min-height: 101dvh;   /* Vercel safe */
+  min-height: 100dvh;   /* Vercel safe */
   border-radius: 0;
   box-shadow: none;
 }
