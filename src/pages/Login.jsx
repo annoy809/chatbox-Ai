@@ -4,20 +4,8 @@ import "./Login.css";
 import * as jwtDecodeModule from "jwt-decode";
 const jwtDecode = jwtDecodeModule.default || jwtDecodeModule;
 
-// 🔥 DIRECT BASE URL (no .env, auto local + deployed)
-const getBaseUrl = () => {
-  const hostname = window.location.hostname;
-
-  // Local development (Vite / React local server)
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return "http://localhost:5000";
-  }
-
-  // Production / Deployed frontend → always use Render backend
-  return "https://chatbox-ai-c6q1.onrender.com";
-};
-
-const BASE_URL = getBaseUrl();
+// 🔥 FINAL FIX: Always use deployed backend (prevents Vercel → localhost redirect)
+const BASE_URL = "https://chatbox-ai-c6q1.onrender.com";
 
 export default function Login({ onClose, onLogin }) {
   const [email, setEmail] = useState("");
@@ -82,7 +70,7 @@ export default function Login({ onClose, onLogin }) {
     setLoading(false);
   };
 
-  // ✅ Google login (auto correct backend: local → localhost, deploy → render)
+  // ✅ Google login always goes to Render backend (no localhost issue)
   const handleGoogleLogin = () => {
     window.location.href = `${BASE_URL}/api/auth/google`;
   };
