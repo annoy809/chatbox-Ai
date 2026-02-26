@@ -20,10 +20,14 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/", session: false }),
   (req, res) => {
     const token = req.user.token;
-    const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
+    // 🔥 FINAL FIX: NEVER fallback to localhost on production
+    const FRONTEND_URL =
+      process.env.FRONTEND_URL ||
+      "https://chatbox-ai-five.vercel.app";
+
     res.redirect(`${FRONTEND_URL}/?token=${token}`);
   }
 );
-
 
 module.exports = router;

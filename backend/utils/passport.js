@@ -12,8 +12,10 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 
-      // ✅ LOCAL callback (NO Render / Vercel)
-      callbackURL: "http://localhost:5000/api/auth/google/callback",
+      // 🔥 AUTO: Local + Production callback FIX (NO HARDCODED LOCALHOST)
+      callbackURL:
+        process.env.GOOGLE_CALLBACK_URL ||
+        "https://chatbox-ai-c6q1.onrender.com/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
