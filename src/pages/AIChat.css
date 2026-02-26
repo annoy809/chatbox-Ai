@@ -292,7 +292,7 @@ html, body, #root {
 @media (max-width: 768px) {
 
   .ai-chat-wrapper {
-    width: 390px;
+    width: 100%;
     height: auto;
     min-height: 100dvh; /* 🔥 instead of 100vh */
     padding: 0;
