@@ -37,10 +37,22 @@ function App() {
   /* ================= BACKEND URL (LOCAL + DEPLOY SAFE) ================= */
   // Local pe: http://localhost:5000
   // Deploy pe: automatically VITE_API_URL use hoga (Render backend)
-  const API_BASE =
-    (import.meta.env.VITE_API_URL &&
-      import.meta.env.VITE_API_URL.replace("/api/ai", "")) ||
-    "http://localhost:5000";
+/* ================= BACKEND URL (DEPLOY + LOCAL FINAL FIX) ================= */
+// Vercel (deploy) → Render backend
+// Localhost → Local backend
+const getApiBase = () => {
+  const hostname = window.location.hostname;
+
+  // Local development
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return "http://localhost:5000";
+  }
+
+  // Deployed frontend (Vercel) → ALWAYS use Render backend
+  return "https://chatbox-ai-c6q1.onrender.com";
+};
+
+const API_BASE = getApiBase();
 
   /* ================= LOAD USER / JWT ================= */
   useEffect(() => {
