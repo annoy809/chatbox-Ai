@@ -301,10 +301,10 @@ html, body, #root {
 
   .chat-glass {
     height: auto;
-    min-height: 100dvh; /* 🔥 Critical Vercel Fix */
+    min-height: 105dvh; /* 🔥 Critical Vercel Fix */
     border-radius: 0;
     box-shadow: none;
-    width: 380px; 
+    width: 390px; 
   }
 
   .chat-header {
