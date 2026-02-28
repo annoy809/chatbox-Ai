@@ -22,24 +22,19 @@ margin-right: 50px;
   margin-left: 62px;
 }
 
+/* ================= MAIN CHAT CONTAINER ================= */
 .chat-glass {
   width: 100%;
   max-width: 1200px;
   height: 90vh;
-  min-height: 90dvh; /* 🔥 Added for mobile + vercel */
-  background: radial-gradient(circle at top left, #4b2c5e, transparent 40%),
-    radial-gradient(circle at bottom right, #3b2415, transparent 40%),
-    linear-gradient(120deg, #120916, #1a0f0a, #120916);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-radius: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+  min-height: 90dvh;
+  background: #212121; /* 🔥 clean dark */
+  border-radius: 28px;
+  border: 1px solid #2a2a2a;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin-left: 0;
-  min-height: 0; 
 }
 
 /* ================= HEADER ================= */
@@ -50,9 +45,7 @@ margin-right: 50px;
   font-weight: 600;
   color: #fff;
   border-bottom: 1px solid #2c2c2c;
-  background: radial-gradient(circle at top left, #4b2c5e, transparent 40%),
-    radial-gradient(circle at bottom right, #3b2415, transparent 40%),
-    linear-gradient(120deg, #120916, #1a0f0a, #120916);
+ background: #212121;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -97,6 +90,7 @@ margin-right: 50px;
   scroll-behavior: smooth;
   min-height: 0;   /* 🔥 REQUIRED for flex scroll */
   height: 0;       /* 🔥 Forces proper scroll container on mobile */
+  
 }
 
 .chat-box::-webkit-scrollbar {
@@ -148,6 +142,7 @@ margin-right: 50px;
   overflow-x: auto;
   border: 1px solid #1f1f1f;
   margin: 10px 0;
+
 }
 
 .msg-bubble pre code {
@@ -173,9 +168,7 @@ margin-right: 50px;
   gap: 10px;
   padding: 12px 15px;
   border-top: 1px solid #2c2c2c;
-  background: radial-gradient(circle at top left, #4b2c5e, transparent 40%),
-    radial-gradient(circle at bottom right, #3b2415, transparent 40%),
-    linear-gradient(120deg, #120916, #1a0f0a, #120916);
+  background: #212121;
   align-items: center;
   position: sticky; /* 🔥 Keeps input fixed in hosted apps */
   bottom: 0;

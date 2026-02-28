@@ -56,10 +56,12 @@ export default function LeftPanel({
     <>
       {/* Hamburger Button */}
       <button
-        className="hamburger-btn"
+        className={`hamburger-btn ${menuOpen ? "active" : ""}`}
         onClick={() => setMenuOpen((open) => !open)}
       >
-        ☰
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
 
       {/* Sidebar */}
@@ -99,9 +101,10 @@ export default function LeftPanel({
             {!chatHistory || chatHistory.length === 0 ? (
               <p className="no-chat-text">No chats yet.</p>
             ) : (
+
               chatHistory
                 .slice()
-                .reverse()
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .map((chat, idx) => (
                   <div
                     key={chat._id || idx}

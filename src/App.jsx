@@ -153,6 +153,20 @@ const API_BASE = getApiBase();
       alert("Delete chat request failed");
     }
   };
+  /* ================= AUTO TITLE GENERATOR ================= */
+const generateAutoTitle = (messages) => {
+  if (!messages || messages.length === 0) return "New Chat";
+
+  const firstUserMsg = messages.find((m) => m.type === "user");
+  if (!firstUserMsg?.text) return "New Chat";
+
+return firstUserMsg.text
+  .replace(/[^\w\s]/gi, "")
+  .split(" ")
+  .slice(0, 6)
+  .join(" ")
+  .replace(/\b\w/g, (c) => c.toUpperCase());
+};
 
   /* ================= CHAT HANDLERS ================= */
   const handleNewChat = (chat) => {
@@ -169,37 +183,57 @@ const API_BASE = getApiBase();
   };
 
   const handleChatHistoryUpdate = async (messages) => {
-    setChatHistory(messages);
+  setChatHistory(messages);
 
-    try {
-      const res = await fetch(`${API_BASE}/api/chat/save`, {
-        method: "POST",
+  try {
+    const res = await fetch(`${API_BASE}/api/chat/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        chatId: activeChat?._id,
+        messages,
+      }),
+    });
+
+    const savedChat = await res.json();
+
+    /* ===== AUTO TITLE LOGIC ===== */
+if (
+  (!savedChat.title || savedChat.title === "Chat") &&
+  messages.filter((m) => m.type === "user").length === 1
+) {
+      const autoTitle = generateAutoTitle(messages);
+      savedChat.title = autoTitle;
+
+      // Update title in backend
+      await fetch(`${API_BASE}/api/chat/${savedChat._id}/rename`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({
-          chatId: activeChat?._id,
-          messages,
-        }),
+        body: JSON.stringify({ title: autoTitle }),
       });
-
-      const savedChat = await res.json();
-      setActiveChat(savedChat);
-
-      setAllChats((prev) => {
-        const exists = prev.find((c) => c._id === savedChat._id);
-        if (exists) {
-          return prev.map((c) =>
-            c._id === savedChat._id ? savedChat : c
-          );
-        }
-        return [savedChat, ...prev];
-      });
-    } catch (err) {
-      console.error("Save chat failed:", err);
     }
-  };
+
+    setActiveChat(savedChat);
+
+    setAllChats((prev) => {
+      const exists = prev.find((c) => c._id === savedChat._id);
+      if (exists) {
+        return prev.map((c) =>
+          c._id === savedChat._id ? savedChat : c
+        );
+      }
+      return [savedChat, ...prev];
+    });
+  } catch (err) {
+    console.error("Save chat failed:", err);
+  }
+};
 
   /* ================= RENAME CHAT (FIXED) ================= */
   const handleRenameChat = async (chatId) => {
