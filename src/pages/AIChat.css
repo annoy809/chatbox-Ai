@@ -284,31 +284,28 @@ margin-right: 50px;
   }
 }
 
-/* ================= MOBILE ================= */
 @media (max-width: 768px) {
 
   .ai-chat-wrapper {
-    width: 390px;
-    padding: 0;
+    width: 100%;
+    max-width: 100vw;   /* 🔥 IMPORTANT */
     margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* 🔥 prevents side scroll */
   }
 
   .chat-glass {
-    width: 100%;
-    max-width: 100%;
+    width: 100vw;       /* 🔥 force full screen */
+    max-width: 100vw;
     height: 100dvh;
-    min-height: 100dvh;
     border-radius: 0;
-    border-left: none;
-    border-right: none;
+    margin: 0;
   }
 
   .chat-header {
     font-size: 15px;
     padding: 12px 14px;
   }
-
-
 
   .msg-bubble {
     max-width: 90%;
@@ -317,35 +314,64 @@ margin-right: 50px;
     border-radius: 14px;
   }
 
-.chat-input {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 380px;
-  z-index: 999;
-  background: #212121;
-  padding: 10px;
-}
+  /* 🔥 FLOATING INPUT PERFECT */
+  .chat-input {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 16px);
+    max-width: 420px;
 
-/* space so messages don't hide behind input */
-.chat-box {
-  padding-bottom: 80px;
-}
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
+    background: rgba(40, 40, 40, 0.95);
+    backdrop-filter: blur(14px);
+
+    padding: 8px 10px;
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,0.08);
+
+    z-index: 999;
+  }
+
+  /* 🔥 TEXTAREA CLEAN */
   .chat-input textarea {
+    flex: 1;
+    border: none;
+    outline: none;
+    resize: none;
+
+    background: transparent;
+    color: #fff;
     font-size: 14px;
-    padding: 10px;
-    border-radius: 12px;
+
+    padding: 8px;
   }
 
+  /* 🔥 BUTTON ROUND */
   .chat-input button {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-size: 15px;
   }
 
+  /* 🔥 IMAGE */
   .chat-image {
-    max-width: 170px;
+    max-width: 160px;
+  }
+
+  /* 🔥 IMPORTANT: SPACE BELOW */
+  .chat-box {
+    padding-bottom: 95px;
+  }
+
+  /* 🔥 SAFE AREA (iPhone fix) */
+  .chat-input {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
   }
 }
 
