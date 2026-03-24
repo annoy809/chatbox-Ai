@@ -320,10 +320,20 @@ margin-right: 50px;
     border-radius: 14px;
   }
 
-  .chat-input {
-    padding: 8px;
-    gap: 6px;
-  }
+.chat-input {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background: #212121;
+  padding: 10px;
+}
+
+/* space so messages don't hide behind input */
+.chat-box {
+  padding-bottom: 80px;
+}
 
   .chat-input textarea {
     font-size: 14px;
