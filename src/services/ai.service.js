@@ -1,4 +1,3 @@
-// frontend/services/aiService.js
 import axios from "axios";
 
 // 🔥 Strict production-safe API URL
@@ -9,40 +8,47 @@ const API_URL = BASE_URL
   ? `${BASE_URL.replace(/\/$/, "")}/api/ai/chat`
   : "http://localhost:5000/api/ai/chat"; // dev only
 
-export const getAIResponse = async (prompt) => {
+// 🔥 UPDATED: imageUrl parameter added (without removing anything)
+export const getAIResponse = async (prompt, image = null) => {
   try {
-    if (!prompt || prompt.trim() === "") {
+    if ((!prompt || prompt.trim() === "") && !image) {
       return "⚠️ Prompt is empty";
     }
 
-    // 🔥 Debug log (important for mobile)
     console.log("API URL:", API_URL);
+    console.log("Sending Image:", image ? "YES" : "NO");
+
+    // 🔥 If image exists, assume it's URL (not base64)
+    const payload = {
+      prompt,
+      imageUrl: image || null, // 🔥 renamed for backend clarity
+    };
 
     const res = await axios.post(
       API_URL,
-      { prompt },
+      payload,
       {
         headers: {
           "Content-Type": "application/json",
         },
-        timeout: 60000, // 🔥 Mobile networks slow (30s can fail)
+        timeout: 60000,
         withCredentials: false,
       }
     );
 
-    // Proper response handling (no [object Object])
+    // Proper response handling
     if (res.data?.message) return res.data.message;
     if (res.data?.reply) return res.data.reply;
     if (typeof res.data === "string") return res.data;
 
     return res.data?.message || "⚠️ No response from AI";
+
   } catch (err) {
     console.error(
       "❌ Frontend AI Error:",
       err?.response?.data || err.message
     );
 
-    // 🔥 Network error (MOST COMMON on mobile)
     if (!err.response) {
       return "📡 Network error: API not reachable (check VITE_API_URL)";
     }

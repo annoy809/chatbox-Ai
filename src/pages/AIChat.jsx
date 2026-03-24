@@ -48,6 +48,10 @@ export default function AIChat({
   const [loading, setLoading] = useState(false);
   const [stopStream, setStopStream] = useState(false);
 
+  // 🔥 NEW: Image State
+  const [selectedImage, setSelectedImage] = useState(null);
+  const fileInputRef = useRef(null);
+
   const chatEndRef = useRef(null);
   const chatBoxRef = useRef(null);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -64,11 +68,22 @@ export default function AIChat({
     }
   }, [messages, autoScroll]);
 
+  /* ================= IMAGE SELECT ================= */
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setSelectedImage(reader.result); // base64
+    };
+    reader.readAsDataURL(file);
+  };
+
   /* ================= STREAM AI ================= */
   const streamText = async (text) => {
     setStopStream(false);
 
-    // 👇 empty AI message pehle push hota hai
     setMessages((prev) => [...prev, { type: "ai", text: "" }]);
 
     let currentText = "";
@@ -78,7 +93,6 @@ export default function AIChat({
 
       currentText += text[i];
 
-      // 👇 har character pe React re-render
       setMessages((prev) => {
         const copy = [...prev];
         copy[copy.length - 1] = {
@@ -88,7 +102,6 @@ export default function AIChat({
         return copy;
       });
 
-      // 👇 typing delay (ChatGPT feel)
       await new Promise((r) => setTimeout(r, 12));
     }
 
@@ -97,26 +110,32 @@ export default function AIChat({
 
   /* ================= SEND MESSAGE ================= */
   const handleSend = async () => {
-    if (!input.trim() || loading) return;
+    if ((!input.trim() && !selectedImage) || loading) return;
 
     const prompt = input;
     setInput("");
     setLoading(true);
 
-    const userMsg = { type: "user", text: prompt };
-    const updatedUserMessages = [...messages, userMsg];
+    const userMsg = {
+      type: "user",
+      text: prompt,
+      image: selectedImage || null,
+    };
 
-    // ✅ user message show immediately
+    const updatedUserMessages = [...messages, userMsg];
     setMessages(updatedUserMessages);
+    setSelectedImage(null);
 
     try {
-      const aiText = await getAIResponse(prompt);
+      const aiText = await getAIResponse(prompt, selectedImage);
 
-      // ✅ AI typing effect
       const finalText = await streamText(aiText);
 
-      // ✅ SAVE chat only once after AI completes
-      const finalMessages = [...updatedUserMessages, { type: "ai", text: finalText }];
+      const finalMessages = [
+        ...updatedUserMessages,
+        { type: "ai", text: finalText },
+      ];
+
       onHistoryUpdate(finalMessages);
     } catch (err) {
       const errorMsg =
@@ -124,7 +143,11 @@ export default function AIChat({
         err.message ||
         "⚠️ Something went wrong";
 
-      const errorMessages = [...updatedUserMessages, { type: "ai", text: errorMsg }];
+      const errorMessages = [
+        ...updatedUserMessages,
+        { type: "ai", text: errorMsg },
+      ];
+
       setMessages(errorMessages);
       onHistoryUpdate(errorMessages);
     } finally {
@@ -141,6 +164,41 @@ export default function AIChat({
       loading ? handleStop() : handleSend();
     }
   };
+const handlePaste = (e) => {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+
+  for (let item of items) {
+    if (item.type.includes("image")) {
+      const file = item.getAsFile();
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSelectedImage(reader.result);
+        console.log("Image set successfully");
+      };
+      reader.readAsDataURL(file);
+
+      e.preventDefault();
+      break;
+    }
+  }
+};
+
+/* ================= LOAD CHAT ================= */
+useEffect(() => {
+  setMessages(chatHistory || []);
+}, [chatHistory, activeChat]);
+
+/* ================= GLOBAL PASTE LISTENER ================= */
+useEffect(() => {
+  window.addEventListener("paste", handlePaste);
+
+  return () => {
+    window.removeEventListener("paste", handlePaste);
+  };
+}, []);
 
   /* ================= UI ================= */
   return (
@@ -158,6 +216,16 @@ export default function AIChat({
           {messages.map((msg, idx) => (
             <div key={idx} className={`msg-row ${msg.type}`}>
               <div className="msg-bubble">
+                
+                {/* 🔥 IMAGE RENDER */}
+                {msg.image && (
+                  <img
+                    src={msg.image}
+                    alt="uploaded"
+                    className="chat-image"
+                  />
+                )}
+
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{ code: CodeBlock }}
@@ -171,12 +239,31 @@ export default function AIChat({
         </div>
 
         <div className="chat-input">
+
+          {/* 🔥 HIDDEN FILE INPUT */}
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleImageChange}
+          />
+
+<button
+  type="button"
+  className="circle-btn"
+  onClick={() => fileInputRef.current.click()}
+>
+  +
+</button>
+
           <textarea
             rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Ask me anything..."
+            onPaste={handlePaste}
           />
 
           {!loading ? (
@@ -187,6 +274,14 @@ export default function AIChat({
             </button>
           )}
         </div>
+
+        {/* 🔥 PREVIEW BEFORE SEND */}
+        {selectedImage && (
+          <div className="image-preview">
+            <img src={selectedImage} alt="preview" />
+          </div>
+        )}
+
       </div>
     </div>
   );

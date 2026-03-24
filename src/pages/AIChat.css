@@ -262,21 +262,21 @@ margin-right: 50px;
 
 /* ================= PROPER MOBILE RESPONSIVE ================= */
 
-/* Tablets */
+/* ================= TABLET ================= */
 @media (max-width: 1024px) {
 
   .ai-chat-wrapper {
     width: 100%;
-    margin-left: 0;
-    padding: 10px;
-    min-height: 100dvh; /* 🔥 Added */
+    margin: 0;
+    padding: 12px;
+    min-height: 100dvh;
   }
 
   .chat-glass {
     max-width: 100%;
     height: auto;
-    min-height: 92dvh; /* 🔥 Vercel safe */
-    border-radius: 24px;
+    min-height: 94dvh;
+    border-radius: 20px;
   }
 
   .msg-bubble {
@@ -284,94 +284,97 @@ margin-right: 50px;
   }
 }
 
-/* Large Mobile */
+/* ================= MOBILE ================= */
 @media (max-width: 768px) {
 
   .ai-chat-wrapper {
     width: 390px;
-    height: auto;
-    min-height: 100dvh; /* 🔥 instead of 100vh */
     padding: 0;
-    margin-left: 0;
+    margin: 0;
   }
 
-.chat-glass {
-  width: 100%;          /* 🔥 FULL WIDTH (no fixed 390px) */
-  max-width: 100%;
-  height: auto;
-  min-height: 100dvh;   /* Vercel safe */
-  border-radius: 0;
-  box-shadow: none;
-}
+  .chat-glass {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
 
   .chat-header {
-    font-size: 16px;
-    padding: 12px 16px;
-  }
-
-  .logout-btn {
-    right: 12px;
-    font-size: 13px;
+    font-size: 15px;
+    padding: 12px 14px;
   }
 
   .chat-box {
-    padding: 14px;
+    padding: 12px;
     gap: 10px;
   }
 
   .msg-bubble {
     max-width: 90%;
     font-size: 13.5px;
-    padding: 10px 14px;
+    padding: 10px 12px;
+    border-radius: 14px;
   }
 
   .chat-input {
-    padding: 10px;
-    gap: 8px;
+    padding: 8px;
+    gap: 6px;
   }
 
   .chat-input textarea {
     font-size: 14px;
-    padding: 10px 12px;
+    padding: 10px;
+    border-radius: 12px;
   }
 
   .chat-input button {
-    width: 42px;
-    height: 42px;
-    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .chat-image {
+    max-width: 170px;
   }
 }
 
-/* Small Phones */
+/* ================= SMALL MOBILE ================= */
 @media (max-width: 480px) {
 
   .chat-header {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .msg-bubble {
     max-width: 95%;
     font-size: 13px;
+    padding: 9px 11px;
   }
 
   .msg-bubble pre code {
     font-size: 12px;
   }
 
+  .chat-input {
+    padding: 6px;
+  }
+
   .chat-input textarea {
     font-size: 13px;
+    padding: 8px;
   }
 
   .chat-input button {
-    width: 38px;
-    height: 38px;
-    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
   }
-}
 
-/* iPhone Safe Area Fix */
-@supports (padding: max(0px)) {
-  .chat-input {
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  .chat-image {
+    max-width: 150px;
   }
 }
