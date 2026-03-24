@@ -486,4 +486,51 @@
   .chat-history-item {
     overflow: visible !important;
   }
+  /* ================= PROFILE MOBILE FIX ================= */
+.profile-section {
+  padding: 10px;
+}
+
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px;
+  border-radius: 14px;
+
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+}
+
+/* Avatar smaller for mobile */
+.avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 13px;
+}
+
+/* Text adjust */
+.user-info {
+  flex: 1;
+  min-width: 0; /* 🔥 prevents overflow */
+}
+
+.user-email {
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 🔥 long email fix */
+}
+
+.user-plan {
+  font-size: 11px;
+}
+
+/* Upgrade button compact */
+.upgrade-btn {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 8px;
+}
 }
