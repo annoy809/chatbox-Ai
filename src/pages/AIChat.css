@@ -288,15 +288,15 @@ margin-right: 50px;
 
   .ai-chat-wrapper {
     width: 100%;
-    max-width: 100vw;   /* 🔥 IMPORTANT */
+    max-width: 100%;
     margin: 0;
     padding: 0;
-    overflow-x: hidden; /* 🔥 prevents side scroll */
+    overflow-x: hidden;
   }
 
   .chat-glass {
-    width: 100vw;       /* 🔥 force full screen */
-    max-width: 100vw;
+    width: 100%;
+    max-width: 100%;
     height: 100dvh;
     border-radius: 0;
     margin: 0;
@@ -314,7 +314,7 @@ margin-right: 50px;
     border-radius: 14px;
   }
 
-  /* 🔥 FLOATING INPUT PERFECT */
+  /* 🔥 FLOATING INPUT */
   .chat-input {
     position: fixed;
     bottom: 12px;
@@ -331,13 +331,14 @@ margin-right: 50px;
     backdrop-filter: blur(14px);
 
     padding: 8px 10px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom)); /* ✅ merged */
+
     border-radius: 28px;
     border: 1px solid rgba(255,255,255,0.08);
 
     z-index: 999;
   }
 
-  /* 🔥 TEXTAREA CLEAN */
   .chat-input textarea {
     flex: 1;
     border: none;
@@ -351,7 +352,6 @@ margin-right: 50px;
     padding: 8px;
   }
 
-  /* 🔥 BUTTON ROUND */
   .chat-input button {
     width: 38px;
     height: 38px;
@@ -359,19 +359,13 @@ margin-right: 50px;
     font-size: 15px;
   }
 
-  /* 🔥 IMAGE */
   .chat-image {
     max-width: 160px;
   }
 
-  /* 🔥 IMPORTANT: SPACE BELOW */
+  /* 🔥 MESSAGE SPACE */
   .chat-box {
     padding-bottom: 95px;
-  }
-
-  /* 🔥 SAFE AREA (iPhone fix) */
-  .chat-input {
-    padding-bottom: max(8px, env(safe-area-inset-bottom));
   }
 }
 
