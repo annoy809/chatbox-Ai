@@ -308,10 +308,7 @@ margin-right: 50px;
     padding: 12px 14px;
   }
 
-  .chat-box {
-    padding: 12px;
-    gap: 10px;
-  }
+
 
   .msg-bubble {
     max-width: 90%;
@@ -324,7 +321,7 @@ margin-right: 50px;
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%;
+  width: 380px;
   z-index: 999;
   background: #212121;
   padding: 10px;
